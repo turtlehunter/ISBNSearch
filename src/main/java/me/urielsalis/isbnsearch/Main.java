@@ -125,9 +125,11 @@ public class Main {
                             Date maxDate = new Date(10);
                             SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
                             String line2;
+                            int sum = 0;
                             while ((line2 = br.readLine()) != null) {
                                 //ISBN;TÍTULO;RAZÓN SOCIAL;EDICIÓN;AUTORES;PALABRAS CLAVES;PRECIO;FECHA DE PUBLICACIÓN
                                 String[] lines = line2.split(";");
+                                sum++;
                                 if (!lines[0].equals("ISBN")) {
                                     if(lines.length > 6) {
                                         Date date = sdf.parse(lines[7]);
@@ -140,6 +142,7 @@ public class Main {
                                     }
                                 }
                             }
+                            if(sum==1) return "NO";
                             break;
 
                         }
