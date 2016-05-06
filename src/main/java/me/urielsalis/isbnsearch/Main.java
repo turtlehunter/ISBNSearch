@@ -65,6 +65,7 @@ public class Main {
             Row row = sheet.getRow(i);
             if (row != null) {
                 String name = row.getCell(0).getStringCellValue();
+                name = name.substring(name.indexOf("(") - 1, line.indexOf(")") + 1);
                 String isbn = getISBN(name);
                 if(isbn != null) {
                     if(row.getCell(column) == null) row.createCell(column);
