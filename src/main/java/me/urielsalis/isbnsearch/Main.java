@@ -33,16 +33,20 @@ public class Main {
     public static Workbook workbook;
     public static Sheet sheet;
     public static int column = 1;
+    public static int column2 = 2;
     public static String str;
     public static HttpClient httpclient;
+    public static String temp;
 
     public static void main(String[] args) throws Exception {
         if (args.length < 1) throw new Exception("Falta archivo de excel");
         System.out.println(args[0]);
         System.out.println(args[1]);
         System.out.println(args[2]);
-        if(args.length >= 2) column = Integer.parseInt(args[1]);
+        System.out.println(args[3]);
+        if(args.length == 2) column = Integer.parseInt(args[1]);
         if(args.length == 3) str = args[2];
+        if(args.length == 4) column2 = args[3];
         System.out.println(args[0]);
         if (args[0].endsWith(".xlsx") || args[0].endsWith(".xls")) {
             FileInputStream fis = new FileInputStream(args[0]);
@@ -69,7 +73,12 @@ public class Main {
                 String isbn = getISBN(name);
                 if(isbn != null) {
                     if(row.getCell(column) == null) row.createCell(column);
-                    row.getCell(column).setCellValue(isbn);
+                    if(row.getCell(column2) == null) row.createCell(column2);
+                    if(temp != null) { //temp is set to autor in searchISBN, null if not found, nullify when done
+                        row.getCell(column).setCellValue(isbn);
+                        row.getCell(column2).setCellValue(temp);
+                        temp = null;
+                    }
                 }
             }
         }
@@ -112,6 +121,7 @@ public class Main {
                 try {
                     String line;
                     String isbn = null;
+                    String autor = null;
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(instream));
                     while ((line = bufferedReader.readLine()) != null) {
                         if (line.contains("<a href=tmp/baja.php?file=")) {
@@ -138,16 +148,19 @@ public class Main {
                                             System.out.println(date);
                                             maxDate = date;
                                             isbn = lines[0];
+                                            autor = lines[4];
                                             System.out.println(isbn);
                                         }
                                     }
                                 }
                             }
+                            temp = autor;
                             if(sum==1) return "NO";
                             break;
 
                         }
                     }
+                    temp = autor;
                     return isbn;
                 } catch (ParseException e) {
                     e.printStackTrace();
