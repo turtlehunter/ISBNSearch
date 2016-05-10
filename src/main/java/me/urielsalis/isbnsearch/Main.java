@@ -32,11 +32,11 @@ public class Main {
     public static Main main;
     public static Workbook workbook;
     public static Sheet sheet;
-    public static int column = 1;
-    public static int column2 = 2;
-    public static String str;
+    public static int column = 1; //ISBN column
+    public static int column2 = 2; //Autor column
+    public static String str; //sello search
     public static HttpClient httpclient;
-    public static String temp;
+    public static String temp; //Autor
 
     public static void main(String[] args) throws Exception {
         if (args.length < 1) throw new Exception("Falta archivo de Excel");
@@ -69,16 +69,16 @@ public class Main {
         for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
             Row row = sheet.getRow(i);
             if (row != null) {
-                String name = row.getCell(0).getStringCellValue();
+                String name = row.getCell(0).getStringCellValue(); //for each cell in first column(names)
                 if(name.contains("(")) {
                     name = name.substring(name.indexOf("(") - 1, name.indexOf(")") + 1);
                 }
-                String isbn = getISBN(name);
+                String isbn = getISBN(name); //get isbn, autor is stored in temp if exists
                 if(isbn != null) {
                     if(row.getCell(column) == null) row.createCell(column);
                     if(row.getCell(column2) == null) row.createCell(column2);
                     if(temp != null) { //temp is set to autor in searchISBN, null if not found, nullify when done
-                        row.getCell(column).setCellValue(isbn);
+                        row.getCell(column).setCellValue(isbn); 
                         row.getCell(column2).setCellValue(temp);
                         temp = null;
                     }
@@ -86,7 +86,7 @@ public class Main {
             }
         }
         try {
-            FileOutputStream fos = new FileOutputStream("result.xls");
+            FileOutputStream fos = new FileOutputStream("result.xls"); //save to file "results.xls"
             workbook.write(fos);
             fos.close();
         } catch (FileNotFoundException e) {
@@ -98,7 +98,7 @@ public class Main {
     }
 
     private String getISBN(String name) {
-        HttpPost httppost = new HttpPost("http://www.isbn.org.ar/web/busqueda-avanzada-resultados.php");
+        HttpPost httppost = new HttpPost("http://www.isbn.org.ar/web/busqueda-avanzada-resultados.php"); 
 
         List<NameValuePair> params = new ArrayList<NameValuePair>(8);
         params.add(new BasicNameValuePair("ingresa", "1"));
@@ -113,7 +113,7 @@ public class Main {
             httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
             httppost.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
             httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-            httppost.setHeader("Origin", "http://www.isbn.org.ar");
+            httppost.setHeader("Origin", "http://www.isbn.org.ar"); //Simulate Chrome in Ubuntu 16.04 from their form
             httppost.setHeader("Referer", "http://www.isbn.org.ar/web/busqueda-simple.php");
             httppost.setHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36");
 
@@ -127,7 +127,7 @@ public class Main {
                     String autor = null;
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(instream));
                     while ((line = bufferedReader.readLine()) != null) {
-                        if (line.contains("<a href=tmp/baja.php?file=")) {
+                        if (line.contains("<a href=tmp/baja.php?file=")) { //grab file name from download url
                             String download = "http://www.isbn.org.ar/web/" + line.substring(line.indexOf("<a href=") + 8, line.indexOf("> DESCARGAR RESULTADOS"));
                             System.out.println(download);
                             URL website = new URL(download);
@@ -137,7 +137,7 @@ public class Main {
 
                             BufferedReader br = new BufferedReader(new FileReader("download.csv"));
                             Date maxDate = new Date(10);
-                            SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
+                            SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy"); //date format in csv
                             String line2;
                             int sum = 0;
                             while ((line2 = br.readLine()) != null) {
@@ -158,7 +158,7 @@ public class Main {
                                 }
                             }
                             temp = autor;
-                            if(sum==1) return "NO";
+                            if(sum==1) return "NO"; //not currently working for some reason
                             break;
 
                         }
@@ -178,6 +178,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return null; //if not found, return null
     }
 }
