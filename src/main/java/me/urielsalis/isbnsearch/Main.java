@@ -44,8 +44,8 @@ public class Main {
         System.out.println(args[1]);
         System.out.println(args[2]);
         System.out.println(args[3]);
-        if(args.length => 2) column = Integer.parseInt(args[1]);
-        if(args.length => 3) str = args[2];
+        if(args.length >= 2) column = Integer.parseInt(args[1]);
+        if(args.length >= 3) str = args[2];
         if(args.length == 4) column2 = Integer.parseInt(args[3]);
         System.out.println(args[0]);
         if (args[0].endsWith(".xls")) {
@@ -53,7 +53,7 @@ public class Main {
             workbook = new HSSFWorkbook(fis);
             sheet = workbook.getSheetAt(0);
             fis.close();
-        } else if(args[0].endsWith(".xlsx") {
+        } else if(args[0].endsWith(".xlsx")) {
             System.err.println("Guardar Excel para 2003-2007");
             System.exit(2);
         } else {
