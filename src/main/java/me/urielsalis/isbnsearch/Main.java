@@ -39,25 +39,26 @@ public class Main {
     public static String temp;
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 1) throw new Exception("Falta archivo de excel");
+        if (args.length < 1) throw new Exception("Falta archivo de Excel");
         System.out.println(args[0]);
         System.out.println(args[1]);
         System.out.println(args[2]);
         System.out.println(args[3]);
-        if(args.length == 2) column = Integer.parseInt(args[1]);
-        if(args.length == 3) str = args[2];
+        if(args.length => 2) column = Integer.parseInt(args[1]);
+        if(args.length => 3) str = args[2];
         if(args.length == 4) column2 = Integer.parseInt(args[3]);
         System.out.println(args[0]);
-        if (args[0].endsWith(".xlsx") || args[0].endsWith(".xls")) {
+        if (args[0].endsWith(".xls")) {
             FileInputStream fis = new FileInputStream(args[0]);
-            try {
-                workbook = new HSSFWorkbook(fis);
-                sheet = workbook.getSheetAt(0);
-            } finally {
-                fis.close();
-            }
+            workbook = new HSSFWorkbook(fis);
+            sheet = workbook.getSheetAt(0);
+            fis.close();
+        } else if(args[0].endsWith(".xlsx") {
+            System.err.println("Guardar Excel para 2003-2007");
+            System.exit(2);
         } else {
-            throw new Exception("No es un archivo de excel");
+            System.err.println("No es un archivo de Excel");
+            System.exit(1);
         }
         httpclient = HttpClients.createDefault();
 
