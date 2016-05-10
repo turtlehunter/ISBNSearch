@@ -46,7 +46,7 @@ public class Main {
         System.out.println(args[3]);
         if(args.length == 2) column = Integer.parseInt(args[1]);
         if(args.length == 3) str = args[2];
-        if(args.length == 4) column2 = args[3];
+        if(args.length == 4) column2 = Integer.parseInt(args[3]);
         System.out.println(args[0]);
         if (args[0].endsWith(".xlsx") || args[0].endsWith(".xls")) {
             FileInputStream fis = new FileInputStream(args[0]);
@@ -69,7 +69,9 @@ public class Main {
             Row row = sheet.getRow(i);
             if (row != null) {
                 String name = row.getCell(0).getStringCellValue();
-                name = name.substring(name.indexOf("(") - 1, line.indexOf(")") + 1);
+                if(name.contains("(")) {
+                    name = name.substring(name.indexOf("(") - 1, name.indexOf(")") + 1);
+                }
                 String isbn = getISBN(name);
                 if(isbn != null) {
                     if(row.getCell(column) == null) row.createCell(column);
@@ -95,7 +97,7 @@ public class Main {
     }
 
     private String getISBN(String name) {
-        HttpPost httppost = new HttpPost("http://www.isbnargentina.org.ar/web/busqueda-avanzada-resultados.php");
+        HttpPost httppost = new HttpPost("http://www.isbn.org.ar/web/busqueda-avanzada-resultados.php");
 
         List<NameValuePair> params = new ArrayList<NameValuePair>(8);
         params.add(new BasicNameValuePair("ingresa", "1"));
@@ -110,8 +112,8 @@ public class Main {
             httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
             httppost.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
             httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-            httppost.setHeader("Origin", "http://www.isbnargentina.org.ar");
-            httppost.setHeader("Referer", "http://www.isbnargentina.org.ar/web/busqueda-simple.php");
+            httppost.setHeader("Origin", "http://www.isbn.org.ar");
+            httppost.setHeader("Referer", "http://www.isbn.org.ar/web/busqueda-simple.php");
             httppost.setHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36");
 
             HttpResponse response = httpclient.execute(httppost);
@@ -125,7 +127,7 @@ public class Main {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(instream));
                     while ((line = bufferedReader.readLine()) != null) {
                         if (line.contains("<a href=tmp/baja.php?file=")) {
-                            String download = "http://www.isbnargentina.org.ar/web/" + line.substring(line.indexOf("<a href=") + 8, line.indexOf("> DESCARGAR RESULTADOS"));
+                            String download = "http://www.isbn.org.ar/web/" + line.substring(line.indexOf("<a href=") + 8, line.indexOf("> DESCARGAR RESULTADOS"));
                             System.out.println(download);
                             URL website = new URL(download);
                             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
