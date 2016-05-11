@@ -2,6 +2,6 @@ language: java
 
 deploy:
   provider: releases
-  api_key: "2L9hVp6wfobwzBrJargi"
+  api_key: "fillme"
   file: "target/ISBNSearch-1.0-SNAPSHOT.jar"
   skip_cleanup: true
