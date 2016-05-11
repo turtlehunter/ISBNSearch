@@ -1,1 +1,9 @@
 language: java
+
+deploy:
+  provider: releases
+  api_key: "d7befe01087bfc2d99143d9dbe82d714cd7d837e"
+  file: "target/ISBNSearch-1.0-SNAPSHOT.jar"
+  skip_cleanup: true
+  on:
+    tags: true
